@@ -7,10 +7,15 @@ import '../provides/pokemon_data_providers.dart';
 
 class PokemonListTile extends ConsumerWidget {
   final String pokemonUrl;
-  const PokemonListTile({super.key, required this.pokemonUrl});
+
+  late FavoritePokemonsProvider _favoritePokemonsProvider;
+  late List<String> _favoritePokemons;
+  PokemonListTile({super.key, required this.pokemonUrl});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _favoritePokemonsProvider = ref.watch(favoritePokemonsProvider.notifier);
+    _favoritePokemons = ref.watch(favoritePokemonsProvider);
     final pokemonData = ref.watch(pokemonDataProvider(pokemonUrl));
 
     return pokemonData.when(
@@ -43,8 +48,19 @@ class PokemonListTile extends ConsumerWidget {
           pokemon != null ? pokemon.name!.toUpperCase() : "Loading...",
         ),
         trailing: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite_border),
+          onPressed: () {
+            if (_favoritePokemons.contains(pokemonUrl)) {
+              _favoritePokemonsProvider.removePokemon(pokemonUrl);
+            } else {
+              _favoritePokemonsProvider.addPokemon(pokemonUrl);
+            }
+          },
+          icon: Icon(
+            _favoritePokemons.contains(pokemonUrl)
+                ? Icons.favorite
+                : Icons.favorite_border,
+            color: Colors.red,
+          ),
         ),
         subtitle: Text("Has ${pokemon?.moves?.length.toString() ?? 0} Moves "),
       ),
