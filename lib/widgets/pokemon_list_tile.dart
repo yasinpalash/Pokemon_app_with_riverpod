@@ -30,8 +30,21 @@ class PokemonListTile extends ConsumerWidget {
     return Skeletonizer(
       enabled: isLoading,
       child: ListTile(
+        leading:
+            pokemon != null
+                ? CircleAvatar(
+                  backgroundImage: NetworkImage(pokemon.sprites!.frontDefault!),
+                )
+                : const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: Icon(Icons.pets),
+                ),
         title: Text(
           pokemon != null ? pokemon.name!.toUpperCase() : "Loading...",
+        ),
+        trailing: IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.favorite_border),
         ),
         subtitle: Text("Has ${pokemon?.moves?.length.toString() ?? 0} Moves "),
       ),
