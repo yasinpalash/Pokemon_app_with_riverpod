@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:testapp/models/pokemon.dart';
+import 'package:testapp/services/database_service.dart';
 import 'package:testapp/services/http_service.dart';
 
 final pokemonDataProvider = FutureProvider.family<Pokemon?, String>((
@@ -25,10 +26,13 @@ final favoritePokemonsProvider =
     });
 
 class FavoritePokemonsProvider extends StateNotifier<List<String>> {
+
+  final DatabaseService _databaseService=GetIt.instance.get<DatabaseService>();
   FavoritePokemonsProvider(super._state) {
     _setup();
   }
   Future<void> _setup() async {
+
     // Load initial data if needed
   }
 
