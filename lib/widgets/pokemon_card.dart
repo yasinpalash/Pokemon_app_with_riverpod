@@ -14,7 +14,7 @@ class PokemonCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _favoritePokemonsProvider=ref.watch(favoritePokemonsProvider.notifier);
+    _favoritePokemonsProvider = ref.watch(favoritePokemonsProvider.notifier);
     final pokemon = ref.watch(pokemonDataProvider(pokemonUrl));
     return pokemon.when(
       data: (data) {
@@ -34,11 +34,14 @@ class PokemonCard extends ConsumerWidget {
       enabled: isLoading,
       ignoreContainers: true,
       child: GestureDetector(
-        onTap: (){
-          if(!isLoading){
-            showDialog(context: context, builder: (_){
-              return PokemonStatsCard(pokemonUrl: pokemonUrl);
-            });
+        onTap: () {
+          if (!isLoading) {
+            showDialog(
+              context: context,
+              builder: (_) {
+                return PokemonStatsCard(pokemonUrl: pokemonUrl);
+              },
+            );
           }
         },
         child: Container(
@@ -90,32 +93,9 @@ class PokemonCard extends ConsumerWidget {
                 ],
               ),
 
-              Expanded(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.sizeOf(context).height * 0.12,
-                      height: MediaQuery.sizeOf(context).height * 0.12,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                    ),
-                    CircleAvatar(
-                      backgroundImage:
-                      pokemon != null
-                          ? NetworkImage(pokemon.sprites!.frontDefault!)
-                          : null,
-                      radius: MediaQuery.sizeOf(context).height * 0.05,
-                    ),
-                  ],
-                ),
-              ),
+              pokemon?.sprites?.frontDefault != null
+                  ? Image.network(pokemon!.sprites!.frontDefault!)
+                  : SizedBox(),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,11 +110,13 @@ class PokemonCard extends ConsumerWidget {
                     ),
                   ),
                   GestureDetector(
-                      onTap: (){
-                        _favoritePokemonsProvider.removePokemon(pokemonUrl);
-                      },
-                      child: Icon(Icons.favorite,color: Colors.red,)),
-                ],)
+                    onTap: () {
+                      _favoritePokemonsProvider.removePokemon(pokemonUrl);
+                    },
+                    child: Icon(Icons.favorite, color: Colors.red),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

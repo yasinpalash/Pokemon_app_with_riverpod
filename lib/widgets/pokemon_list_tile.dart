@@ -36,42 +36,63 @@ class PokemonListTile extends ConsumerWidget {
   Widget _tileUI(BuildContext context, bool isLoading, Pokemon? pokemon) {
     return Skeletonizer(
       enabled: isLoading,
-      child: ListTile(
-        onTap: (){
-          if(!isLoading){
-            showDialog(context: context, builder: (_){
-              return PokemonStatsCard(pokemonUrl: pokemonUrl);
-            });
-          }
-        },
-        leading:
-        pokemon != null
-            ? CircleAvatar(
-          backgroundImage: NetworkImage(pokemon.sprites!.frontDefault!),
-        )
-            : const CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: Icon(Icons.pets),
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-        title: Text(
-          pokemon != null ? pokemon.name!.toUpperCase() : "Loading...",
-        ),
-        trailing: IconButton(
-          onPressed: () {
-            if (_favoritePokemons.contains(pokemonUrl)) {
-              _favoritePokemonsProvider.removePokemon(pokemonUrl);
-            } else {
-              _favoritePokemonsProvider.addPokemon(pokemonUrl);
+        elevation: 2,
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          onTap: () {
+            if (!isLoading) {
+              showDialog(
+                context: context,
+                builder: (_) => PokemonStatsCard(pokemonUrl: pokemonUrl),
+              );
             }
           },
-          icon: Icon(
-            _favoritePokemons.contains(pokemonUrl)
-                ? Icons.favorite
-                : Icons.favorite_border,
-            color: Colors.red,
+          leading: Hero(
+            tag: pokemonUrl,
+            child: CircleAvatar(
+              radius: 26,
+              backgroundColor: Colors.blue.shade50,
+              backgroundImage: pokemon?.sprites?.frontDefault != null
+                  ? NetworkImage(pokemon!.sprites!.frontDefault!)
+                  : null,
+              child: pokemon?.sprites?.frontDefault == null
+                  ? const Icon(Icons.pets, color: Colors.grey)
+                  : null,
+            ),
+          ),
+          title: Text(
+            pokemon?.name?.toUpperCase() ?? "LOADING...",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+          subtitle: Text(
+            "Has ${pokemon?.moves?.length ?? 0} Moves",
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              if (_favoritePokemons.contains(pokemonUrl)) {
+                _favoritePokemonsProvider.removePokemon(pokemonUrl);
+              } else {
+                _favoritePokemonsProvider.addPokemon(pokemonUrl);
+              }
+            },
+            icon: Icon(
+              _favoritePokemons.contains(pokemonUrl)
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+              color: Colors.redAccent,
+            ),
           ),
         ),
-        subtitle: Text("Has ${pokemon?.moves?.length.toString() ?? 0} Moves "),
       ),
     );
   }
