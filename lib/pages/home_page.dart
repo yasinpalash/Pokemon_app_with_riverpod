@@ -8,9 +8,9 @@ import 'package:testapp/widgets/pokemon_card.dart';
 import 'package:testapp/widgets/pokemon_list_tile.dart';
 
 final homePageControllerProvider =
-    StateNotifierProvider<HomePageController, HomePageData>((ref) {
-      return HomePageController(HomePageData.initial());
-    });
+StateNotifierProvider<HomePageController, HomePageData>((ref) {
+  return HomePageController(HomePageData.initial());
+});
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -42,7 +42,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   void _scrollListener() {
     if (_allPokemonListScrollController.offset >=
-            _allPokemonListScrollController.position.maxScrollExtent * 1 &&
+        _allPokemonListScrollController.position.maxScrollExtent * 1 &&
         !_allPokemonListScrollController.position.outOfRange) {
       _homePageController.loadData();
     }
@@ -142,3 +142,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 }
+
+
+
+
+
+
+

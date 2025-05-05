@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -44,14 +45,14 @@ class PokemonListTile extends ConsumerWidget {
           }
         },
         leading:
-            pokemon != null
-                ? CircleAvatar(
-                  backgroundImage: NetworkImage(pokemon.sprites!.frontDefault!),
-                )
-                : const CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: Icon(Icons.pets),
-                ),
+        pokemon != null
+            ? CircleAvatar(
+          backgroundImage: NetworkImage(pokemon.sprites!.frontDefault!),
+        )
+            : const CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: Icon(Icons.pets),
+        ),
         title: Text(
           pokemon != null ? pokemon.name!.toUpperCase() : "Loading...",
         ),

@@ -51,7 +51,7 @@ class PokemonCard extends ConsumerWidget {
             vertical: MediaQuery.of(context).size.height * 0.01,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -91,12 +91,29 @@ class PokemonCard extends ConsumerWidget {
               ),
 
               Expanded(
-                child: CircleAvatar(
-                  backgroundImage:
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.sizeOf(context).height * 0.12,
+                      height: MediaQuery.sizeOf(context).height * 0.12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                    ),
+                    CircleAvatar(
+                      backgroundImage:
                       pokemon != null
                           ? NetworkImage(pokemon.sprites!.frontDefault!)
                           : null,
-                  radius: MediaQuery.sizeOf(context).height*0.05,
+                      radius: MediaQuery.sizeOf(context).height * 0.05,
+                    ),
+                  ],
                 ),
               ),
 
@@ -104,20 +121,20 @@ class PokemonCard extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                Text(
-                  "${pokemon?.moves?.length.toString() ?? 0} Moves ",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black38,
+                  Text(
+                    "${pokemon?.moves?.length.toString() ?? 0} Moves ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black38,
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: (){
-                    _favoritePokemonsProvider.removePokemon(pokemonUrl);
-                  },
-                    child: Icon(Icons.favorite,color: Colors.red,)),
-              ],)
+                  GestureDetector(
+                      onTap: (){
+                        _favoritePokemonsProvider.removePokemon(pokemonUrl);
+                      },
+                      child: Icon(Icons.favorite,color: Colors.red,)),
+                ],)
             ],
           ),
         ),
