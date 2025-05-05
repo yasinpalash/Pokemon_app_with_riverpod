@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:testapp/models/pokemon.dart';
+import 'package:testapp/widgets/pokemon_stats_Card.dart';
 
 import '../provides/pokemon_data_providers.dart';
 
@@ -35,6 +36,13 @@ class PokemonListTile extends ConsumerWidget {
     return Skeletonizer(
       enabled: isLoading,
       child: ListTile(
+        onTap: (){
+          if(!isLoading){
+            showDialog(context: context, builder: (_){
+              return PokemonStatsCard(pokemonUrl: pokemonUrl);
+            });
+          }
+        },
         leading:
             pokemon != null
                 ? CircleAvatar(

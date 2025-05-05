@@ -26,20 +26,29 @@ final favoritePokemonsProvider =
     });
 
 class FavoritePokemonsProvider extends StateNotifier<List<String>> {
+  final DatabaseService _databaseService =
+      GetIt.instance.get<DatabaseService>();
 
-  final DatabaseService _databaseService=GetIt.instance.get<DatabaseService>();
+  String FAVORITE_POKEMONS_KEY = "favorite_pokemons";
   FavoritePokemonsProvider(super._state) {
     _setup();
   }
   Future<void> _setup() async {
 
-    // Load initial data if needed
+    List<String>?result =
+        await _databaseService.getList(FAVORITE_POKEMONS_KEY);
+
+    state=result??[];
+
   }
 
-  void addPokemon(String url){
-    state=[...state,url];
+  void addPokemon(String url) {
+    state = [...state, url];
+    _databaseService.saveList(FAVORITE_POKEMONS_KEY, state);
   }
-  void removePokemon(String url){
-    state=state.where((element) => element!=url).toList();
+
+  void removePokemon(String url) {
+    state = state.where((element) => element != url).toList();
+    _databaseService.saveList(FAVORITE_POKEMONS_KEY, state);
   }
 }
