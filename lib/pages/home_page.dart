@@ -26,10 +26,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   final ScrollController _allPokemonListScrollController = ScrollController();
 
   late List<String> _favoritePokemons;
+
   @override
   void initState() {
     _allPokemonListScrollController.addListener(_scrollListener);
-
     super.initState();
   }
 
@@ -42,7 +42,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   void _scrollListener() {
     if (_allPokemonListScrollController.offset >=
-        _allPokemonListScrollController.position.maxScrollExtent * 1 &&
+        _allPokemonListScrollController.position.maxScrollExtent &&
         !_allPokemonListScrollController.position.outOfRange) {
       _homePageController.loadData();
     }
@@ -53,99 +53,82 @@ class _HomePageState extends ConsumerState<HomePage> {
     _homePageController = ref.watch(homePageControllerProvider.notifier);
     _homePageData = ref.watch(homePageControllerProvider);
     _favoritePokemons = ref.watch(favoritePokemonsProvider);
-    return Scaffold(body: _buildUI(context));
-  }
 
-  Widget _buildUI(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.02,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _favoritePokemonsList(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pokémon App'),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Favorite Section Title
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(
+                "Favorite Pokémon",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
 
-              _allPokemonList(context),
-            ],
-          ),
+            // Favorite Pokémon List
+            _buildFavoriteList(context),
+
+            // All Pokémon Section Title
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(
+                "All Pokémon",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            // All Pokémon List
+            Expanded(child: _buildAllPokemonList(context)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _favoritePokemonsList(BuildContext context) {
+  Widget _buildFavoriteList(BuildContext context) {
+    if (_favoritePokemons.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Text("No Favorite Pokémon"),
+      );
+    }
+
     return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Favorite", style: TextStyle(fontSize: 25)),
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.50,
-            width: MediaQuery.sizeOf(context).width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (_favoritePokemons.isNotEmpty)
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.50,
-                    child: GridView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _favoritePokemons.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemBuilder: (context, index) {
-                        String pokemonUrl = _favoritePokemons[index];
-                        return PokemonCard(pokemonUrl: pokemonUrl);
-                      },
-                    ),
-                  ),
-                if (_favoritePokemons.isEmpty)
-                  const Text("No Favorite Pokemons"),
-              ],
-            ),
-          ),
-        ],
+      height: 200,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _favoritePokemons.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          String pokemonUrl = _favoritePokemons[index];
+          return PokemonCard(pokemonUrl: pokemonUrl);
+        },
       ),
     );
   }
 
-  Widget _allPokemonList(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("All Pokemons", style: TextStyle(fontSize: 25)),
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.60,
-            child: ListView.builder(
-              controller: _allPokemonListScrollController,
-              itemCount: _homePageData.data?.results?.length ?? 0,
-              itemBuilder: (context, index) {
-                PokemonListResult pokemon = _homePageData.data!.results![index];
-                return PokemonListTile(pokemonUrl: pokemon.url!);
-              },
-            ),
-          ),
-        ],
-      ),
+  Widget _buildAllPokemonList(BuildContext context) {
+    return ListView.separated(
+      controller: _allPokemonListScrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: _homePageData.data?.results?.length ?? 0,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final pokemon = _homePageData.data!.results![index];
+        return PokemonListTile(pokemonUrl: pokemon.url!);
+      },
     );
   }
 }
-
-
-
-
-
-
-
