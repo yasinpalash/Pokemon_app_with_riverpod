@@ -22,3 +22,7 @@ A simple and clean Pokémon app built using **Flutter**, powered by **Riverpod**
 git clone https://github.com/yasinpalash/flutter_riverpod_Pokemon_app.git
 
 
+
+
+https://github.com/user-attachments/assets/dcf3af23-fbce-4bdf-8012-6579cddd016c
+
